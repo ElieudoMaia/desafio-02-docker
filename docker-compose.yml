@@ -8,8 +8,6 @@ services:
     image: elieudomaia/nodeapp
     container_name: node-app
     entrypoint: wait-for mysqldb:3306 -t 40 -- ./start.sh
-    ports:
-      - "3333:3333"
     volumes:
       - ./app:/home/node/app
     networks: 
