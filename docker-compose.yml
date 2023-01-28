@@ -1,0 +1,49 @@
+version: '3'
+
+services: 
+  nodeapp:
+    build: 
+      context: ./app
+      dockerfile: Dockerfile
+    image: elieudomaia/nodeapp
+    container_name: node-app
+    entrypoint: wait-for mysqldb:3306 -t 40 -- ./start.sh
+    ports:
+      - "3333:3333"
+    volumes:
+      - ./app:/home/node/app
+    networks: 
+      - appnet
+    depends_on:
+      - mysqldb
+
+  nginx:
+    build: 
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: elieudomaia/nginxapp
+    container_name: nginx
+    networks: 
+      - appnet
+    ports:
+      - "8080:80"
+
+  mysqldb:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: mysqldb
+    restart: always
+    tty: true
+    ports:
+      - "3306:3306"
+    volumes: 
+      - ./mysql:/var/lib/mysql
+    environment: 
+      - MYSQL_DATABASE=nodedb
+      - MYSQL_ROOT_PASSWORD=root
+    networks: 
+      - appnet
+
+networks: 
+  appnet:
+    driver: bridge
