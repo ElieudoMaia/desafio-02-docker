@@ -2,6 +2,6 @@ Prepare environment
 
 `docker-compose up -d`
 
-Run ecample
+Run example
 
 `http://localhost:8080/`
